@@ -1,8 +1,10 @@
 <template>
     <div class="kindle-sender-root">
-        <div class="upload">
+        <img src="./assets/kindle-sender.png"/>
+
+        <div class="upload__body">
             <ul v-if="files.length">
-                <li v-for="(file, index) in files" :key="file.id">
+                <li v-for="file in files" :key="file.id">
                     <span>{{file.name}}</span> -
                     <span>{{file.size | formatSize}}</span> -
                     <span v-if="file.error">{{file.error}}</span>
@@ -11,28 +13,30 @@
                     <span v-else></span>
                 </li>
             </ul>
-            <ul v-else>
-                <td colspan="7">
-                    <div class="text-center p-5">
-                        <h4>Drop files anywhere to upload<br/>or</h4>
-                        <label for="file" class="btn btn-lg btn-primary">Select Files</label>
-                    </div>
-                </td>
-            </ul>
-
-            <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active">
-                <h3>Drop files to upload</h3>
+            <div v-else>
+                <h4>Drop files anywhere to upload<br/>or</h4>
+                <label for="file" class="btn btn-lg btn-primary">Select Files</label>
             </div>
         </div>
 
-        <at-button v-if="$refs.upload && !$refs.upload.active" @click.prevent="$refs.upload.active = true">
-            <i class="fa fa-arrow-up" aria-hidden="true"></i>
+        <at-button
+            v-if="$refs.upload && !$refs.upload.active"
+            type="success"
+            icon="icon-upload"
+            @click.prevent="$refs.upload.active = true">
             开始上传
         </at-button>
-        <at-button v-else @click.prevent="$refs.upload.active = false">
-            <i class="fa fa-stop" aria-hidden="true"></i>
+        <at-button
+            v-else
+            type="error"
+            icon="icon-stop-circle"
+            @click.prevent="$refs.upload.active = false">
             中止上传
         </at-button>
+
+        <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active__mask">
+            <h3>Drop files to upload</h3>
+        </div>
 
         <file-upload
             v-model="files"
@@ -60,12 +64,26 @@
 </script>
 
 <style>
-    .kindle-sender-root label.btn {
+    .kindle-sender-root {
+        padding: 20px;
+    }
+
+    .kindle-sender-root > img {
+        margin: 0 auto 10px;
+        display: block;
+    }
+
+    .upload__body {
+        width: 100%;
+        margin-bottom: 20px;
+    }
+
+    .upload__body label.btn {
         margin-bottom: 0;
         margin-right: 1rem;
     }
 
-    .kindle-sender-root .drop-active {
+    .kindle-sender-root .drop-active__mask {
         top: 0;
         bottom: 0;
         right: 0;
@@ -77,7 +95,7 @@
         background: #000;
     }
 
-    .kindle-sender-root .drop-active h3 {
+    .kindle-sender-root .drop-active__mask h3 {
         margin: -.5em 0 0;
         position: absolute;
         top: 50%;
