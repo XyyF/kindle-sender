@@ -6,7 +6,7 @@ import mutations from './mutations';
 
 Vue.use(Vuex);
 
-const accountInStorage = window.localStorage.ACCOUNT;
+const accountInStorage = JSON.parse(window.localStorage.ACCOUNT || '{}');
 // initial state
 const state = {
     /**

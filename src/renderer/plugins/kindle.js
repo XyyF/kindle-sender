@@ -1,4 +1,4 @@
 import Vue from 'vue';
 import kindle from 'kindle';
 
-Vue.$kindle = kindle;
+Vue.prototype.$kindle = kindle;

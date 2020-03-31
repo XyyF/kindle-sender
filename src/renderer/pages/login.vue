@@ -10,7 +10,7 @@
             <at-input v-model="password" placeholder="请输入密码">
                 <i slot="prepend" class="icon icon-lock"></i>
             </at-input>
-            <at-button type="primary">
+            <at-button type="primary" @click="handleLogin">
                 登录
             </at-button>
         </div>
@@ -18,11 +18,10 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex';
+
     export default {
         name: 'login',
-        directives: {},
-        components: {},
-        mixins: [],
         data() {
             /* Notice: 给data里面的变量留下说明文字 */
             return {
@@ -30,41 +29,27 @@
                 password: '',
             };
         },
-        props: {
-            /* Notice: 写下props数据的描述、用途 */
-            /* Notice: props 里面的定义，使用此结构，type、default */
-        },
         computed: {
-            /* Notice: 写下computed数据的描述 */
+            // 邮箱错误校验
+            emailValidor() {
+                return false;
+            },
         },
-        filters: {},
         methods: {
             /* Notice: 复杂的方法，写下说明 */
-        },
-        watch: {
-            /* Notice: 写下说明 */
-        },
-        beforeCreate() {
-        },
-        created() {
-        },
-        beforeMount() {
-        },
-        mounted() {
-        },
-        beforeUpdate() {
-        },
-        updated() {
-        },
-        activated() {
-        },
-        deactivated() {
-        },
-        beforeDestroy() {
-        },
-        destroyed() {
-        },
-        errorCaptured() {
+            ...mapActions({
+                vxLogin: 'login',
+            }),
+            async handleLogin() {
+                await this.vxLogin({
+                    email: this.email,
+                    password: this.password,
+                });
+                this.$Message.success('登录成功');
+                this.$router.push({
+                    name: 'Upload',
+                });
+            },
         },
     };
 </script>

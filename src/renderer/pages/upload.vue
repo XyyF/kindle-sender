@@ -20,18 +20,11 @@
         </div>
 
         <at-button
-            v-if="$refs.upload && !$refs.upload.active"
+            v-if="files.length > 0 && $refs.upload && !$refs.upload.active"
             type="success"
             icon="icon-upload"
             @click.prevent="handleStartUpload">
             开始上传
-        </at-button>
-        <at-button
-            v-else
-            type="error"
-            icon="icon-stop-circle"
-            @click.prevent="$refs.upload.active = false">
-            中止上传
         </at-button>
 
         <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active__mask">
@@ -62,22 +55,24 @@
             // 开始上传
             handleStartUpload() {
                 const files = this.files.map(e => e.file.path);
-                this.$kindle.push({
-                    to: '',
-                    from: '',
-                    sender: {
-                        email: '',
-                        password: '',
-                    },
-                    files,
-                }, (err, result) => {
-                    if (result.stat !== 'error') {
-                        this.$Message.success(`恭喜,${files[0]}等${files.length}个文件已成功推送到您的 kindle!`);
-                    } else {
-                        this.$Message.error('发送失败...失败详情如下');
-                        this.$Message.error(result.error);
-                    }
-                });
+                try {
+                    this.$kindle.push({
+                        to: '',
+                        from: '',
+                        sender: {
+                            email: '',
+                            password: '',
+                        },
+                        files,
+                    }, (err, result) => {
+                        if (result.stat !== 'error') {
+                            this.$Message.success(`恭喜,${files[0]}等${files.length}个文件已成功推送到您的 kindle!`);
+                        }
+                    });
+                } catch (error) {
+                    this.$Message.error(`发送失败...失败详情如下: ${error.message}`);
+                    throw error;
+                }
             },
         },
     };
