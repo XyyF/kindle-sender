@@ -43,6 +43,9 @@
 </template>
 
 <script>
+    import { mapState } from 'vuex';
+    import store from '../store';
+
     export default {
         name: 'upload',
         components: {},
@@ -51,17 +54,22 @@
                 files: [],
             };
         },
+        computed: {
+            ...mapState({
+                vxAccount: state => state.accountInfo,
+            }),
+        },
         methods: {
             // 开始上传
             handleStartUpload() {
                 const files = this.files.map(e => e.file.path);
                 try {
                     this.$kindle.push({
-                        to: '',
-                        from: '',
+                        to: this.vxAccount.toMail,
+                        from: this.vxAccount.fromMail,
                         sender: {
-                            email: '',
-                            password: '',
+                            email: this.vxAccount.toMail,
+                            password: this.vxAccount.password,
                         },
                         files,
                     }, (err, result) => {
@@ -74,6 +82,14 @@
                     throw error;
                 }
             },
+        },
+        beforeRouteEnter(to, from, next) {
+            const isLoggedIn = store.getters.isLogin;
+            if (!isLoggedIn) {
+                next({ name: 'Login' });
+                return;
+            }
+            next();
         },
     };
 </script>
