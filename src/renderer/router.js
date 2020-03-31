@@ -5,12 +5,13 @@ Vue.use(VueRouter);
 
 // 1. 定义 (路由) 组件。
 // 可以从其他文件 import 进来
+const Login = () => import('./pages/login.vue'/* webpackChunkName: "kindle_sender_login" */);
 const Upload = () => import('./pages/upload.vue'/* webpackChunkName: "kindle_sender_upload" */);
 
 // 2. 定义路由
 const routes = [
     { path: '', redirect: { name: 'Login' } },
-    { path: '/login', component: Upload, name: 'Login' },
+    { path: '/login', component: Login, name: 'Login' },
     { path: '/upload', component: Upload, name: 'Upload' },
 ];
 
