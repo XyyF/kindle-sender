@@ -23,8 +23,9 @@
             v-if="files.length > 0 && $refs.upload && !$refs.upload.active"
             type="success"
             icon="icon-upload"
+            :disabled="isLoading"
             @click.prevent="handleStartUpload">
-            开始上传
+            {{ isLoading ? '正在上传中...' : '开始上传' }}
         </at-button>
 
         <div v-show="$refs.upload && $refs.upload.dropActive" class="drop-active__mask">
@@ -52,6 +53,7 @@
         data() {
             return {
                 files: [],
+                isLoading: false,
             };
         },
         computed: {
@@ -64,21 +66,25 @@
             handleStartUpload() {
                 const files = this.files.map(e => e.file.path);
                 try {
+                    this.isLoading = true;
                     this.$kindle.push({
                         to: this.vxAccount.toMail,
                         from: this.vxAccount.fromMail,
                         sender: {
-                            email: this.vxAccount.toMail,
+                            email: this.vxAccount.fromMail,
                             password: this.vxAccount.password,
                         },
                         files,
-                    }, (err, result) => {
+                    }, (result) => {
                         if (result.stat !== 'error') {
-                            this.$Message.success(`恭喜,${files[0]}等${files.length}个文件已成功推送到您的 kindle!`);
+                            this.$Message.success(`恭喜,${this.files[0].name}等${files.length}个文件已成功推送到您的kindle!`);
                         }
+                        this.isLoading = false;
+                        this.files = [];
                     });
                 } catch (error) {
                     this.$Message.error(`发送失败...失败详情如下: ${error.message}`);
+                    this.isLoading = false;
                     throw error;
                 }
             },

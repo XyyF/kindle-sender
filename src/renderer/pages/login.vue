@@ -76,6 +76,7 @@
 <script>
     import { shell } from 'electron';
     import { mapActions } from 'vuex';
+    import store from '../store';
 
     export default {
         name: 'login',
@@ -120,9 +121,7 @@
                     toMail: this.toMail,
                 });
                 this.$Message.success('登录成功');
-                this.$router.push({
-                    name: 'Upload',
-                });
+                this.$router.push({ name: 'Upload' });
             },
             handleGoPassword() {
                 shell.openExternal('https://service.mail.qq.com/cgi-bin/help?subtype=1&&no=1001256&&id=28');
@@ -130,6 +129,14 @@
             handleGoToMail() {
                 shell.openExternal('https://www.amazon.cn/gp/help/customer/display.html?nodeId=G7NECT4B4ZWHQ8WV');
             },
+        },
+        beforeRouteEnter(to, from, next) {
+            const isLoggedIn = store.getters.isLogin;
+            if (!isLoggedIn) {
+                next();
+                return;
+            }
+            next({ name: 'Upload' });
         },
     };
 </script>
