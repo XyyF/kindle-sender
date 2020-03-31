@@ -15,7 +15,7 @@
             </ul>
             <div v-else>
                 <h4>Drop files anywhere to upload<br/>or</h4>
-                <label for="file" class="btn btn-lg btn-primary">Select Files</label>
+                <label for="file">Select Files</label>
             </div>
         </div>
 
@@ -23,7 +23,7 @@
             v-if="$refs.upload && !$refs.upload.active"
             type="success"
             icon="icon-upload"
-            @click.prevent="$refs.upload.active = true">
+            @click.prevent="handleStartUpload">
             开始上传
         </at-button>
         <at-button
@@ -41,7 +41,6 @@
         <file-upload
             v-model="files"
             ref="upload"
-            post-action="/upload/post"
             style="display: none;"
             :multiple="true"
             :drop="true"
@@ -51,7 +50,6 @@
 </template>
 
 <script>
-
     export default {
         name: 'kindle-sender',
         components: {},
@@ -59,6 +57,28 @@
             return {
                 files: [],
             };
+        },
+        methods: {
+            // 开始上传
+            handleStartUpload() {
+                const files = this.files.map(e => e.file.path);
+                this.$kindle.push({
+                    to: '',
+                    from: '',
+                    sender: {
+                        email: '',
+                        password: '',
+                    },
+                    files,
+                }, (err, result) => {
+                    if (result.stat !== 'error') {
+                        this.$Message.success(`恭喜,${files[0]}等${files.length}个文件已成功推送到您的 kindle!`);
+                    } else {
+                        this.$Message.error('发送失败...失败详情如下');
+                        this.$Message.error(result.error);
+                    }
+                });
+            },
         },
     };
 </script>
