@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import FileUpload from 'vue-upload-component/src';
+import FileUpload from 'vue-upload-component';
 
 Vue.component('file-upload', FileUpload);
 Vue.filter('formatSize', (size) => {
