@@ -75,7 +75,7 @@
 
 <script>
     import { shell } from 'electron';
-    import { mapActions } from 'vuex';
+    import { mapState, mapActions } from 'vuex';
     import store from '../store';
 
     export default {
@@ -89,6 +89,9 @@
             };
         },
         computed: {
+            ...mapState({
+                vxPreAccount: state => state.preAccountInfo,
+            }),
             // 邮箱错误校验
             fromMailValidator() {
                 if (!this.fromMail) return '请输入邮箱';
@@ -129,6 +132,12 @@
             handleGoToMail() {
                 shell.openExternal('https://www.amazon.cn/gp/help/customer/display.html?nodeId=G7NECT4B4ZWHQ8WV');
             },
+            initForm() {
+                if (!this.vxPreAccount || !this.vxPreAccount.fromMail) return;
+                this.fromMail = this.vxPreAccount.fromMail;
+                this.password = this.vxPreAccount.password;
+                this.toMail = this.vxPreAccount.toMail;
+            },
         },
         beforeRouteEnter(to, from, next) {
             const isLoggedIn = store.getters.isLogin;
@@ -137,6 +146,9 @@
                 return;
             }
             next({ name: 'Upload' });
+        },
+        mounted() {
+            this.initForm();
         },
     };
 </script>

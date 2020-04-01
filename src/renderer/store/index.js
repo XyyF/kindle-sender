@@ -7,6 +7,7 @@ import mutations from './mutations';
 Vue.use(Vuex);
 
 const accountInStorage = JSON.parse(window.localStorage.ACCOUNT || '{}');
+const preAccountInStorage = JSON.parse(window.localStorage.PREACCOUNT || '{}');
 // initial state
 const state = {
     /**
@@ -15,6 +16,7 @@ const state = {
      * password 邮箱密码信息
      */
     accountInfo: accountInStorage,
+    preAccountInfo: preAccountInStorage,
 };
 
 const store = new Vuex.Store({
