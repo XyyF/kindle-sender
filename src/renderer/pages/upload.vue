@@ -1,5 +1,17 @@
 <template>
     <div class="upload-root">
+        <header style="text-align: right;padding: 0 10px;font-size: 18px;">
+            <at-dropdown @on-dropdown-command="handleLogOut">
+                <span>
+                    <i class="icon icon-user" style="border: 1px solid #000;border-radius: 50%;"></i>
+                    <i class="icon icon-chevron-down"></i>
+                </span>
+                <at-dropdown-menu slot="menu" style="text-align: center;">
+                    <at-dropdown-item>退出</at-dropdown-item>
+                </at-dropdown-menu>
+            </at-dropdown>
+        </header>
+
         <img src="../assets/kindle-sender.png"/>
 
         <div class="upload__body">
@@ -44,7 +56,7 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState, mapActions } from 'vuex';
     import store from '../store';
 
     export default {
@@ -62,11 +74,15 @@
             }),
         },
         methods: {
+            ...mapActions({
+                vxLogout: 'logout',
+            }),
             // 开始上传
             handleStartUpload() {
                 const files = this.files.map(e => e.file.path);
                 try {
                     this.isLoading = true;
+                    this.$Loading.start();
                     this.$kindle.push({
                         to: this.vxAccount.toMail,
                         from: this.vxAccount.fromMail,
@@ -80,13 +96,21 @@
                             this.$Message.success(`恭喜,${this.files[0].name}等${files.length}个文件已成功推送到您的kindle!`);
                         }
                         this.isLoading = false;
+                        this.$Loading.finish();
                         this.files = [];
                     });
                 } catch (error) {
                     this.$Message.error(`发送失败...失败详情如下: ${error.message}`);
                     this.isLoading = false;
+                    this.$Loading.error();
                     throw error;
                 }
+            },
+            handleLogOut() {
+                this.vxLogout();
+                this.$router.push({
+                    name: 'Login',
+                });
             },
         },
         beforeRouteEnter(to, from, next) {
@@ -102,7 +126,7 @@
 
 <style lang="scss" rel='stylesheet/scss' scoped>
     .upload-root {
-        padding: 20px;
+        padding: 40px;
     }
 
     .upload-root > img {

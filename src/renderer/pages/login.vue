@@ -7,7 +7,7 @@
             <at-input
                 v-model="fromMail"
                 placeholder="请输入邮箱"
-                :maxlength="20">
+                :maxlength="40">
                 <at-tooltip
                     slot="prepend"
                     placement="right"
@@ -47,7 +47,7 @@
             <at-input
                 v-model="toMail"
                 placeholder="请输入"
-                :maxlength="20">
+                :maxlength="40">
                 <at-tooltip
                     slot="prepend"
                     placement="right"
